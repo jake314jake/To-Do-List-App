@@ -11,6 +11,7 @@ function Task() {
   const [message, setMessage] = useState('');
   const [selectedTasks, setSelectedTasks] = useState([]);
   const [isLightTheme, setIsLightTheme] = useState(true);
+  const [getHistory,setGetHistory]=useState(false);
 
   const location = useLocation();
   const userName = location.state?.userName || '';
@@ -77,7 +78,9 @@ function Task() {
         console.error(err);
       });
   };
-
+ const handleGetHisrory =()=>{
+      setGetHistory(!getHistory)
+ }
  
 
   const renderTable = () => {
@@ -87,21 +90,21 @@ function Task() {
           <tr>
             <th>Task</th>
             <th>Task Creation Time</th>
-            <th>Done</th>
+            {!getHistory&&<th>Done</th>}
           </tr>
         </thead>
         <tbody>
-          {data.map((task) => (
+          {data.filter(task=>getHistory?task.TaskCOMP:!task.TaskCOMP).map((task) => (
             <tr key={task.TaskID}>
               <td>{task.TaskTEXT}</td>
               <td>{task.TaskTIMECreate}</td>
-              <td>
+              {!getHistory&&<td>
                 <input
                   type="checkbox"
                   onChange={() => handleCheckBoxChange(task.TaskID)}
                   checked={selectedTasks.includes(task.TaskID)}
                 />
-              </td>
+              </td>}
             </tr>
           ))}
         </tbody>
@@ -118,7 +121,7 @@ function Task() {
           <div className="col-lg-6 offset-lg-3">
             <div className={`card ${isLightTheme ? '' : 'bg-dark text-light'}`}>
               <div className={`card-header ${isLightTheme ? 'bg-primary' : 'bg-secondary text-light'}`}>
-                <h2 className="card-title">Task Manager</h2>
+                <h2 className="card-title">Todo List Manager</h2>
                 <button className="btn btn-primary" onClick={handleThemeToggle}>
                      <i className={`bi bi-${isLightTheme ? 'sun' : 'moon'}`} /> 
                     
@@ -156,10 +159,17 @@ function Task() {
                 <button
                   className="btn btn-primary"
                   onClick={handleDoneClick}
-                  disabled={selectedTasks.length === 0}
+                  disabled={selectedTasks.length === 0 }
                 >
                   DONE
                 </button>
+                <button
+                  className="btn btn-primary"
+                  onClick={handleGetHisrory}
+                >
+                  {getHistory?"Tasks":"History"}
+                </button>
+                <div> {data.filter(task=>!task.TaskCOMP).length >0 && !getHistory?`${data.filter(task=>!task.TaskCOMP).length} Task left`:''}</div>
               </div>
             </div>
           </div>

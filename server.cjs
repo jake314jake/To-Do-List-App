@@ -41,7 +41,7 @@ app.post('/api/data', (req, res) => {
 });
 
 function fetchTasks(userName, res) {
-  db.all('SELECT * FROM Task NATURAL JOIN Users WHERE TaskCOMP = 0 AND UserNAME = ?', [userName], (err, data) => {
+  db.all('SELECT * FROM Task NATURAL JOIN Users WHERE  UserNAME = ?', [userName], (err, data) => {
     if (err) {
       return res.status(500).json({ error: err.message });
     }
